@@ -31,13 +31,19 @@ class Board:
     @classmethod
     def solve(cls):
         # 1) find the first empty spot
+        num_row_idx = -1  # start at -1 so we can add 1 each time. The first run will make it idx 0
+        num_column_idx = -1
+
         for row in cls.board:
+            num_row_idx += 1
             for num in row:
+                num_column_idx += 1
                 if num == 0:
                     # 2) find the lowest available number
                     num += 1  # Start with choosing 1 assume it works, and try to prove otherwise
                     valid_number = True
                     while valid_number:
+                        # check horizontal
                         for i in row:
                             if i == num:
                                 valid_number = False
