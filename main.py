@@ -34,12 +34,15 @@ class Board:
         for row in cls.board:
             for num in row:
                 if num == 0:
-                    num += 1
-                    while True:
-                        # check horizontal
+                    # 2) find the lowest available number
+                    num += 1  # Start with choosing 1 assume it works, and try to prove otherwise
+                    valid_number = True
+                    while valid_number:
                         for i in row:
-                            if num == i:
-                                nu
+                            if i == num:
+                                valid_number = False
+
+
                         # check vertical
                         # check same square
 
