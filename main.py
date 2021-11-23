@@ -61,6 +61,17 @@ class Board:
                 return False
             return True
 
+    @classmethod
+    def check_vertical(cls, row_index, column_index):
+        number_to_check = cls.board[row_index][column_index]
+        for row_idx, row in enumerate(cls.board):
+            for column_idx, element in enumerate(row):
+                if column_idx == column_index:
+                    if row_index != row_idx and element == number_to_check:
+                        return False
+                    return True
+
+
 
     @classmethod
     def solve(cls, first_blank):
