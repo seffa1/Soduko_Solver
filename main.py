@@ -29,28 +29,55 @@ class Board:
 
 
     @classmethod
-    def solve(cls):
+    def first_blank(cls):
         # 1) find the first empty spot
-        num_row_idx = -1  # start at -1 so we can add 1 each time. The first run will make it idx 0
-        num_column_idx = -1
-
-        for row in cls.board:
-            num_row_idx += 1
-            for num in row:
-                num_column_idx += 1
-                if num == 0:
-                    # 2) find the lowest available number
-                    num += 1  # Start with choosing 1 assume it works, and try to prove otherwise
-                    valid_number = True
-                    while valid_number:
-                        # check horizontal
-                        for i in row:
-                            if i == num:
-                                valid_number = False
+        for chosen_row_index, chosen_row in enumerate(cls.board):
+            for chosen_column_idx, chosen_num in enumerate(chosen_row):
+                if cls.board[chosen_row_index][chosen_column_idx] == 0:  # 2) find the lowest available number
+                    return [chosen_row_index, chosen_column_idx]
+                    # Now that the empty spot has been chosen
+                    # We add one to it and check horizontal
 
 
-                        # check vertical
-                        # check same square
+                    # check vertical
+                    for row_idx, row in enumerate(cls.board):
+                        for column_idx, element in enumerate(row):
+                            if column_idx == chosen_column_idx:
+                                if element == chosen_num and chosen_row_index != row_idx:
+                                    break
+                    # If that check fails, add one and re-check horizontal until horizontal check passes
+                    # Save this as the base case
+                    # Then check vertical, if it fails, add 1 until it passes
+                    # Then check square, if it fails, add 1 until it passes
+                    # If all checks pass, then exit the while loop
+                    # Program will then move to the next empty spot
+                    # If a number fails all test and is > 9, then reset the board and make the chosen spot the base case + 1
+
+    @classmethod
+    def check_horizontal(cls, row_index, column_index):
+        number_to_check = cls.board[row_index][column_index]
+        for idx, element in enumerate(cls.board[row_index]):
+            if idx != column_index and element == number_to_check:
+                return False
+            return True
+
+
+    @classmethod
+    def solve(cls, first_blank):
+        base_case_row = first_blank[0]
+        base_case_column = first_blank[1]
+
+        cls.board[base_case_row][base_case_column] += 1
+        chosen_num = cls.board[chosen_row_index][chosen_column_idx]
+        print('---------------------')
+        cls.show_board()
+
+
+
+
+            # check same square
+
+
 
         # 3) Go through each empty spot, adding the lowest possible number that's allowed
         # 4) If you run into a spot where no numbers are allowed, go back to the original spot
@@ -78,3 +105,5 @@ def select_difficulty():
 if __name__ == '__main__':
     select_difficulty()
     Board.show_board()
+    input("press enter to solve")
+    Board.solve()
