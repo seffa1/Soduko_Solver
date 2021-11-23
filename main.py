@@ -63,7 +63,9 @@ class Board:
                         return False
                     return True
 
-
+    @classmethod
+    def check_square(cls, row_index, column_index):
+        pass
 
     @classmethod
     def solve(cls, first_blank):
