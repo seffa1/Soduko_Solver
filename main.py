@@ -37,14 +37,6 @@ class Board:
                     return [chosen_row_index, chosen_column_idx]
                     # Now that the empty spot has been chosen
                     # We add one to it and check horizontal
-
-
-                    # check vertical
-                    for row_idx, row in enumerate(cls.board):
-                        for column_idx, element in enumerate(row):
-                            if column_idx == chosen_column_idx:
-                                if element == chosen_num and chosen_row_index != row_idx:
-                                    break
                     # If that check fails, add one and re-check horizontal until horizontal check passes
                     # Save this as the base case
                     # Then check vertical, if it fails, add 1 until it passes
