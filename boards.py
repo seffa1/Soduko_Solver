@@ -1,6 +1,6 @@
-# 1: easy, 2: medium, 3: hard
+# This is a duplicate for testing, its not a viable sudoku puzzle
 boards = {
-    '1': [[0, 1, 0, 0, 3, 0, 0, 8, 4],
+    '1': [[0, 1, 0, 0, 3, 5, 9, 8, 4],
           [5, 9, 4, 0, 0, 7, 0, 1, 0],
           [0, 1, 3, 0, 0, 0, 0, 5, 0],
           [0, 0, 0, 2, 1, 8, 0, 0, 0],
@@ -16,7 +16,7 @@ boards = {
     '3': [[]]
 }
 
-
+# 1: easy, 2: medium, 3: hard
 # boards = {
 #     '1': [[0, 2, 0, 0, 3, 0, 0, 8, 4],
 #           [5, 9, 4, 0, 0, 7, 0, 1, 0],

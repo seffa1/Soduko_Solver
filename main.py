@@ -44,7 +44,7 @@ class Board:
         for idx, element in enumerate(cls.board[row_index]):
             if idx != column_index and element == number_to_check:
                 return False
-            return True
+        return True
 
     @classmethod
     def check_vertical(cls, row_index, column_index):
