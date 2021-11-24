@@ -1,5 +1,7 @@
 import boards
 import os
+from collections import deque
+
 # TEST 
 
 def clear():
@@ -29,21 +31,12 @@ class Board:
 
 
     @classmethod
-    def first_blank(cls):
-        # 1) find the first empty spot
+    def find_empty(cls):
+        # 1) find the next empty spot
         for chosen_row_index, chosen_row in enumerate(cls.board):
             for chosen_column_idx, chosen_num in enumerate(chosen_row):
                 if cls.board[chosen_row_index][chosen_column_idx] == 0:  # 2) find the lowest available number
-                    return [chosen_row_index, chosen_column_idx]
-                    # Now that the empty spot has been chosen
-                    # We add one to it and check horizontal
-                    # If that check fails, add one and re-check horizontal until horizontal check passes
-                    # Save this as the base case
-                    # Then check vertical, if it fails, add 1 until it passes
-                    # Then check square, if it fails, add 1 until it passes
-                    # If all checks pass, then exit the while loop
-                    # Program will then move to the next empty spot
-                    # If a number fails all test and is > 9, then reset the board and make the chosen spot the base case + 1
+                    return chosen_row_index, chosen_column_idx
 
     @classmethod
     def check_horizontal(cls, row_index, column_index):
@@ -61,35 +54,63 @@ class Board:
                 if column_idx == column_index:
                     if row_index != row_idx and element == number_to_check:
                         return False
-                    return True
+        return True
 
     @classmethod
     def check_square(cls, row_index, column_index):
         pass
 
     @classmethod
-    def solve(cls, first_blank):
-        base_case_row = first_blank[0]
-        base_case_column = first_blank[1]
+    def is_valid(cls, row_index, column_index):
+        valid = True
+        if cls.board[row_index][column_index] == 0:
+            valid = False
 
-        cls.board[base_case_row][base_case_column] += 1
-        chosen_num = cls.board[chosen_row_index][chosen_column_idx]
-        print('---------------------')
-        cls.show_board()
+        if not cls.check_horizontal(row_index, column_index):
+            valid = False
+
+        if not cls.check_vertical(row_index, column_index):
+            valid = False
+
+        # if not cls.check_square(row_index, column_index):
+        #     valid = False
+
+        return valid
+
+    # This stack keeps track of what spots we have been so we can back track
+    back_track_stack = deque()
+
+    @classmethod
+    def solve(cls):
+        # We always move to the next empty (0) spot on the board
+        current_row, current_column = cls.find_empty()
+
+        # Once we find an empty spot, add it to the stack so we can go in reverse if our tests fails
+        cls.back_track_stack.append((current_row, current_column))
+
+        # We add 1 to the empty spot until it is valid
+        while not cls.is_valid(current_row, current_column):
+
+            # If the number gets to 9 and still isn't valid, we need to backtrack
+            if cls.board[current_row][current_column] == 9:
+
+                # Reset the current spot to 0
+                cls.board[current_row][current_column] = 0
+
+                # Remove the current spot from the stack
+                cls.back_track_stack.pop()
+
+                # Then set the current spot to be the previous
+                current_row, current_column = cls.back_track_stack[-1]
+
+            # If our number is less than 9, we can add 1 and check it again
+            cls.board[current_row][current_column] = cls.board[current_row][current_column] + 1
+
+        # If we got here the current spot was valid and we repeat the process
+        cls.solve()
 
 
 
-
-            # check same square
-
-
-
-        # 3) Go through each empty spot, adding the lowest possible number that's allowed
-        # 4) If you run into a spot where no numbers are allowed, go back to the original spot
-        # 5) Change that spot to the next lowest available number, and go back to step 3
-        # 6) If every spot gets a number assigned, then you have a solution
-        # 7) Save the solution as "East solution 1"
-        # 8) Increment the original spot again and check for additional solutions until you've tried all possible numbers
 
 def select_difficulty():
     choices = ['1']  # add 2 and 3 here later
