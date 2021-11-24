@@ -58,7 +58,20 @@ class Board:
 
     @classmethod
     def check_square(cls, row_index, column_index):
-        pass
+        # The number we are checking against
+        input_number = cls.board[row_index][column_index]
+
+        # Finds the minimum row/column index of the 3x3 square our input is in using // to round down to it
+        box_row_index = row_index // 3
+        box_column_index = column_index // 3
+
+        # Now we iterate through the indexes of the 3x3 box we are in, and put those index into our board
+        # Then check if a number is the same but in a different square than our input
+        for row in range(box_row_index * 3, box_row_index * 3 + 3):
+            for column in range(box_column_index * 3, box_column_index * 3 + 3):
+                if cls.board[row][column] == input_number and (row_index, column_index) != (row, column):
+                    return False
+        return True
 
     @classmethod
     def is_valid(cls, row_index, column_index):
@@ -72,8 +85,8 @@ class Board:
         if not cls.check_vertical(row_index, column_index):
             valid = False
 
-        # if not cls.check_square(row_index, column_index):
-        #     valid = False
+        if not cls.check_square(row_index, column_index):
+            valid = False
 
         return valid
 
