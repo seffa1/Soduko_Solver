@@ -2,9 +2,11 @@ import boards
 import os
 from collections import deque
 import sys
+import timeit
+import time
 
 
-# TEST 
+# TEST
 
 def clear():
     os.system('cls')
@@ -12,6 +14,7 @@ def clear():
 
 def end_game():
     print("Game over!")
+    input('press enter to quit')
     sys.exit()
 
 
@@ -24,17 +27,32 @@ class Board:
 
     @classmethod
     def show_board(cls):
+        print(f'Back Track Count: {cls.back_track_count}')
         row_length = len(cls.board[0])
         row_string = ''
+        row_line_counter = 0
+        column_line_counter = 0
         num_count = 0
         for row in cls.board:
             for num in row:
                 row_string += str(num) + '  '
+                row_line_counter += 1
+                if row_line_counter % 3 == 0:
+                    row_string += '| '
+                    row_line_counter = 0
                 num_count += 1
                 if num_count % row_length == 0:
+
                     print(row_string)
                     row_string = ''
                     num_count = 0
+                    column_line_counter += 1
+                    if column_line_counter % 3 == 0:
+                        print('- - - - - - - - - - - - - - - -')
+                        column_line_counter = 0
+
+
+
 
     @classmethod
     def find_empty(cls):
@@ -99,16 +117,18 @@ class Board:
         return valid
 
     # This stack keeps track of what spots we have been so we can back track
+    show_algo = False
     back_track_stack = deque()
 
+    sleep = .01
+    back_track_count = 0
     @classmethod
     def solve(cls):
         # We always move to the next empty (0) spot on the board
         try:
             current_row, current_column = cls.find_empty()
-        except:
-            TypeError("You solved the board!")
-            end_game()
+        except TypeError:
+            return
 
         # Once we find an empty spot, add it to the stack so we can go in reverse if our tests fails
         cls.back_track_stack.append((current_row, current_column))
@@ -118,8 +138,15 @@ class Board:
 
             # If the number gets to 9 and still isn't valid, we need to backtrack
             while cls.board[current_row][current_column] == 9:
+                # Count the amount of times we backtrac
+                cls.back_track_count += 1
+
                 # Reset the current spot to 0
                 cls.board[current_row][current_column] = 0
+                if cls.show_algo:
+                    clear()
+                    cls.show_board()
+                    time.sleep(cls.sleep)
 
                 # Remove the current spot from the stack
                 cls.back_track_stack.pop()
@@ -130,13 +157,17 @@ class Board:
             # If our number is less than 9, we can add 1 and check it again
             if cls.board[current_row][current_column] < 9:
                 cls.board[current_row][current_column] = cls.board[current_row][current_column] + 1
+                if cls.show_algo:
+                    clear()
+                    cls.show_board()
+                    time.sleep(cls.sleep)
 
         # If we got here the current spot was valid and we repeat the process
         cls.solve()
 
 
 def select_difficulty():
-    choices = ['1']  # add 2 and 3 here later
+    choices = ['1', '2', '3']  # add 2 and 3 here later
 
     a = ''
     while a not in choices:
@@ -154,10 +185,33 @@ def select_difficulty():
     Board.load_board(a)
 
 
+# def test():
+#     """Stupid test function"""
+#     L = [i for i in range(100)]
+#
+# if __name__ == '__main__':
+#     import timeit
+#     print(timeit.timeit("Board.solve()", setup="from __main__ import Board"))
+
 if __name__ == '__main__':
     select_difficulty()
     Board.show_board()
     input("press enter to solve")
+    print("Show algo in action?")
+    a = ''
+    while a not in ['y', 'n']:
+        a = input("y/n ---->")
+
+    if a == 'y':
+        cls.show_algo = True
+
+    tic = time.perf_counter()
     Board.solve()
+    toc = time.perf_counter()
+    solve_time = toc - tic
+    clear()
     Board.show_board()
-    input('Press Enter To Quit')
+    print(f'Solved puzzle in {solve_time}')
+    print("Press enter to quit")
+    # print(timeit.timeit("Board.solve()", number=10000))
+
