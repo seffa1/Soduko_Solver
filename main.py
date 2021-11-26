@@ -9,9 +9,11 @@ import sys
 def clear():
     os.system('cls')
 
+
 def end_game():
     print("Game over!")
     sys.exit()
+
 
 class Board:
     board = None
@@ -33,7 +35,6 @@ class Board:
                     print(row_string)
                     row_string = ''
                     num_count = 0
-
 
     @classmethod
     def find_empty(cls):
@@ -106,10 +107,8 @@ class Board:
         try:
             current_row, current_column = cls.find_empty()
         except:
-            TypeError ("You solved the board!")
+            TypeError("You solved the board!")
             end_game()
-
-
 
         # Once we find an empty spot, add it to the stack so we can go in reverse if our tests fails
         cls.back_track_stack.append((current_row, current_column))
@@ -119,7 +118,6 @@ class Board:
 
             # If the number gets to 9 and still isn't valid, we need to backtrack
             while cls.board[current_row][current_column] == 9:
-
                 # Reset the current spot to 0
                 cls.board[current_row][current_column] = 0
 
@@ -135,8 +133,6 @@ class Board:
 
         # If we got here the current spot was valid and we repeat the process
         cls.solve()
-
-
 
 
 def select_difficulty():
