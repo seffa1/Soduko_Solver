@@ -203,7 +203,7 @@ if __name__ == '__main__':
         a = input("y/n ---->")
 
     if a == 'y':
-        cls.show_algo = True
+        Board.show_algo = True
 
     tic = time.perf_counter()
     Board.solve()
