@@ -105,12 +105,11 @@ class Board:
 
         return valid
 
-    
     # Variables to aid in showing the algo in action
     sleep = .01
     back_track_count = 0
     show_algo = False
-    
+
     # This stack keeps track of what spots we have been so we can back track
     back_track_stack = deque()
 
@@ -197,4 +196,3 @@ if __name__ == '__main__':
     Board.show_board()
     print(f'Solved puzzle in {solve_time}')
     print("Press enter to quit")
-
