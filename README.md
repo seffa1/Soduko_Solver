@@ -1,4 +1,4 @@
-# Soduko_Solver
+# Soduko_Solver: Python 3.8.8
 This program using a backtracking algorithm to solve 3 difficulties of sudoku puzzles.
 You can choose to have the algo print so you can visually see it in action.
 It times and keeps tracks of the number of back tracks.
