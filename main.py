@@ -6,16 +6,8 @@ import timeit
 import time
 
 
-# TEST
-
 def clear():
     os.system('cls')
-
-
-def end_game():
-    print("Game over!")
-    input('press enter to quit')
-    sys.exit()
 
 
 class Board:
@@ -50,9 +42,6 @@ class Board:
                     if column_line_counter % 3 == 0:
                         print('- - - - - - - - - - - - - - - -')
                         column_line_counter = 0
-
-
-
 
     @classmethod
     def find_empty(cls):
@@ -116,12 +105,15 @@ class Board:
 
         return valid
 
-    # This stack keeps track of what spots we have been so we can back track
-    show_algo = False
-    back_track_stack = deque()
-
+    
+    # Variables to aid in showing the algo in action
     sleep = .01
     back_track_count = 0
+    show_algo = False
+    
+    # This stack keeps track of what spots we have been so we can back track
+    back_track_stack = deque()
+
     @classmethod
     def solve(cls):
         # We always move to the next empty (0) spot on the board
@@ -185,14 +177,6 @@ def select_difficulty():
     Board.load_board(a)
 
 
-# def test():
-#     """Stupid test function"""
-#     L = [i for i in range(100)]
-#
-# if __name__ == '__main__':
-#     import timeit
-#     print(timeit.timeit("Board.solve()", setup="from __main__ import Board"))
-
 if __name__ == '__main__':
     select_difficulty()
     Board.show_board()
@@ -213,5 +197,4 @@ if __name__ == '__main__':
     Board.show_board()
     print(f'Solved puzzle in {solve_time}')
     print("Press enter to quit")
-    # print(timeit.timeit("Board.solve()", number=10000))
 
