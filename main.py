@@ -1,12 +1,17 @@
 import boards
 import os
 from collections import deque
+import sys
+
 
 # TEST 
 
 def clear():
     os.system('cls')
 
+def end_game():
+    print("Game over!")
+    sys.exit()
 
 class Board:
     board = None
@@ -37,6 +42,8 @@ class Board:
             for chosen_column_idx, chosen_num in enumerate(chosen_row):
                 if cls.board[chosen_row_index][chosen_column_idx] == 0:  # 2) find the lowest available number
                     return chosen_row_index, chosen_column_idx
+        cls.show_board()
+        return print("Board Solved!")
 
     @classmethod
     def check_horizontal(cls, row_index, column_index):
@@ -96,7 +103,13 @@ class Board:
     @classmethod
     def solve(cls):
         # We always move to the next empty (0) spot on the board
-        current_row, current_column = cls.find_empty()
+        try:
+            current_row, current_column = cls.find_empty()
+        except:
+            TypeError ("You solved the board!")
+            end_game()
+
+
 
         # Once we find an empty spot, add it to the stack so we can go in reverse if our tests fails
         cls.back_track_stack.append((current_row, current_column))
@@ -105,7 +118,7 @@ class Board:
         while not cls.is_valid(current_row, current_column):
 
             # If the number gets to 9 and still isn't valid, we need to backtrack
-            if cls.board[current_row][current_column] == 9:
+            while cls.board[current_row][current_column] == 9:
 
                 # Reset the current spot to 0
                 cls.board[current_row][current_column] = 0
@@ -117,7 +130,8 @@ class Board:
                 current_row, current_column = cls.back_track_stack[-1]
 
             # If our number is less than 9, we can add 1 and check it again
-            cls.board[current_row][current_column] = cls.board[current_row][current_column] + 1
+            if cls.board[current_row][current_column] < 9:
+                cls.board[current_row][current_column] = cls.board[current_row][current_column] + 1
 
         # If we got here the current spot was valid and we repeat the process
         cls.solve()
@@ -131,6 +145,9 @@ def select_difficulty():
     a = ''
     while a not in choices:
         clear()
+        sys.setrecursionlimit(10000)
+        print(f'recurrsion limit: {sys.getrecursionlimit()}')
+
         print('Select Difficulty:')
         print('-----------------')
         print('1 <--- Easy')
@@ -146,3 +163,5 @@ if __name__ == '__main__':
     Board.show_board()
     input("press enter to solve")
     Board.solve()
+    Board.show_board()
+    input('Press Enter To Quit')
