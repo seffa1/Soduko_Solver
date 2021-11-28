@@ -20,6 +20,7 @@ class Board:
     @classmethod
     def show_board(cls):
         print(f'Back Track Count: {cls.back_track_count}')
+        print(f'Iteration Count: {cls.iteration_count}')
         row_length = len(cls.board[0])
         row_string = ''
         row_line_counter = 0
@@ -108,6 +109,7 @@ class Board:
     # Variables to aid in showing the algo in action
     sleep = .01
     back_track_count = 0
+    iteration_count = 0
     show_algo = False
 
     # This stack keeps track of what spots we have been so we can back track
@@ -148,6 +150,7 @@ class Board:
             # If our number is less than 9, we can add 1 and check it again
             if cls.board[current_row][current_column] < 9:
                 cls.board[current_row][current_column] = cls.board[current_row][current_column] + 1
+                cls.iteration_count += 1
                 if cls.show_algo:
                     clear()
                     cls.show_board()
