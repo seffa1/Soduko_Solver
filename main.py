@@ -4,6 +4,8 @@ from collections import deque
 import sys
 import timeit
 import time
+import faulthandler
+import psutil
 
 
 def clear():
@@ -21,6 +23,9 @@ class Board:
     def show_board(cls):
         print(f'Back Track Count: {cls.back_track_count}')
         print(f'Iteration Count: {cls.iteration_count}')
+        print(f'Stack Length: {len(cls.back_track_stack)}')
+        print(f'Recurse Depth: {cls.recurse_depth}')
+        print(f'MB used: {cls.process.memory_info()[0] // (1024 * 1024)}')
         row_length = len(cls.board[0])
         row_string = ''
         row_line_counter = 0
@@ -51,8 +56,7 @@ class Board:
             for chosen_column_idx, chosen_num in enumerate(chosen_row):
                 if cls.board[chosen_row_index][chosen_column_idx] == 0:  # 2) find the lowest available number
                     return chosen_row_index, chosen_column_idx
-        cls.show_board()
-        return print("Board Solved!")
+        return
 
     @classmethod
     def check_horizontal(cls, row_index, column_index):
@@ -111,12 +115,22 @@ class Board:
     back_track_count = 0
     iteration_count = 0
     show_algo = False
+    recurse_depth = 0
+    process = psutil.Process(os.getpid())
 
     # This stack keeps track of what spots we have been so we can back track
     back_track_stack = deque()
 
     @classmethod
     def solve(cls):
+        cls.process = psutil.Process(os.getpid())
+
+        if cls.show_algo:
+            clear()
+            cls.show_board()
+            time.sleep(cls.sleep)
+
+        # THIS IS NOT GOOD THOUGH, WHAT IF YOU ARENT GETTING A TYPE ERROR
         # We always move to the next empty (0) spot on the board
         try:
             current_row, current_column = cls.find_empty()
@@ -125,6 +139,7 @@ class Board:
 
         # Once we find an empty spot, add it to the stack so we can go in reverse if our tests fails
         cls.back_track_stack.append((current_row, current_column))
+
 
         # We add 1 to the empty spot until it is valid
         while not cls.is_valid(current_row, current_column):
@@ -157,7 +172,9 @@ class Board:
                     time.sleep(cls.sleep)
 
         # If we got here the current spot was valid and we repeat the process
+        cls.recurse_depth += 1
         cls.solve()
+        cls.recurse_depth -= 1
 
 
 def select_difficulty():
@@ -180,6 +197,7 @@ def select_difficulty():
 
 
 if __name__ == '__main__':
+    faulthandler.enable()
     select_difficulty()
     Board.show_board()
     input("press enter to solve")
@@ -195,7 +213,7 @@ if __name__ == '__main__':
     Board.solve()
     toc = time.perf_counter()
     solve_time = toc - tic
-    clear()
+
     Board.show_board()
     print(f'Solved puzzle in {solve_time}')
     print("Press enter to quit")
