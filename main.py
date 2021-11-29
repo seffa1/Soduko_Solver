@@ -56,7 +56,7 @@ class Board:
             for chosen_column_idx, chosen_num in enumerate(chosen_row):
                 if cls.board[chosen_row_index][chosen_column_idx] == 0:  # 2) find the lowest available number
                     return chosen_row_index, chosen_column_idx
-        return
+        return None
 
     @classmethod
     def check_horizontal(cls, row_index, column_index):
@@ -115,7 +115,6 @@ class Board:
     back_track_count = 0
     iteration_count = 0
     show_algo = False
-    recurse_depth = 0
     process = psutil.Process(os.getpid())
 
     # This stack keeps track of what spots we have been so we can back track
@@ -123,58 +122,49 @@ class Board:
 
     @classmethod
     def solve(cls):
-        cls.process = psutil.Process(os.getpid())
+        while cls.find_empty() is not None:
+            if cls.show_algo:
+                clear()
+                cls.show_board()
+                time.sleep(cls.sleep)
 
-        if cls.show_algo:
-            clear()
-            cls.show_board()
-            time.sleep(cls.sleep)
-
-        # THIS IS NOT GOOD THOUGH, WHAT IF YOU ARENT GETTING A TYPE ERROR
-        # We always move to the next empty (0) spot on the board
-        try:
+            # We always move to the next empty (0) spot on the board
             current_row, current_column = cls.find_empty()
-        except TypeError:
-            return
 
-        # Once we find an empty spot, add it to the stack so we can go in reverse if our tests fails
-        cls.back_track_stack.append((current_row, current_column))
+            # Once we find an empty spot, add it to the stack so we can go in reverse if our tests fails
+            cls.back_track_stack.append((current_row, current_column))
+
+            # We add 1 to the empty spot until it is valid
+            while not cls.is_valid(current_row, current_column):
+
+                # If the number gets to 9 and still isn't valid, we need to backtrack
+                while cls.board[current_row][current_column] == 9:
+                    # Count the amount of times we backtrac
+                    cls.back_track_count += 1
+
+                    # Reset the current spot to 0
+                    cls.board[current_row][current_column] = 0
+                    if cls.show_algo:
+                        clear()
+                        cls.show_board()
+                        time.sleep(cls.sleep)
+
+                    # Remove the current spot from the stack
+                    cls.back_track_stack.pop()
+
+                    # Then set the current spot to be the previous
+                    current_row, current_column = cls.back_track_stack[-1]
+
+                # If our number is less than 9, we can add 1 and check it again
+                if cls.board[current_row][current_column] < 9:
+                    cls.board[current_row][current_column] = cls.board[current_row][current_column] + 1
+                    cls.iteration_count += 1
+                    if cls.show_algo:
+                        clear()
+                        cls.show_board()
+                        time.sleep(cls.sleep)
 
 
-        # We add 1 to the empty spot until it is valid
-        while not cls.is_valid(current_row, current_column):
-
-            # If the number gets to 9 and still isn't valid, we need to backtrack
-            while cls.board[current_row][current_column] == 9:
-                # Count the amount of times we backtrac
-                cls.back_track_count += 1
-
-                # Reset the current spot to 0
-                cls.board[current_row][current_column] = 0
-                if cls.show_algo:
-                    clear()
-                    cls.show_board()
-                    time.sleep(cls.sleep)
-
-                # Remove the current spot from the stack
-                cls.back_track_stack.pop()
-
-                # Then set the current spot to be the previous
-                current_row, current_column = cls.back_track_stack[-1]
-
-            # If our number is less than 9, we can add 1 and check it again
-            if cls.board[current_row][current_column] < 9:
-                cls.board[current_row][current_column] = cls.board[current_row][current_column] + 1
-                cls.iteration_count += 1
-                if cls.show_algo:
-                    clear()
-                    cls.show_board()
-                    time.sleep(cls.sleep)
-
-        # If we got here the current spot was valid and we repeat the process
-        cls.recurse_depth += 1
-        cls.solve()
-        cls.recurse_depth -= 1
 
 
 def select_difficulty():
