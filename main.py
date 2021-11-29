@@ -165,8 +165,6 @@ class Board:
                         time.sleep(cls.sleep)
 
 
-
-
 def select_difficulty():
     choices = ['1', '2', '3']  # add 2 and 3 here later
 
